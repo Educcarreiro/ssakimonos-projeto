@@ -33,17 +33,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const rawFetch = useCallback(async (path: string, init?: RequestInit) => {
-    const res = await fetch(`${API_URL}/v1${path}`, {
-      ...init,
-      credentials: "include",
-      headers: {
-        // FormData define seu próprio Content-Type com boundary — nunca fixar aqui.
-        ...(init?.body && !(init.body instanceof FormData) ? { "Content-Type": "application/json" } : {}),
-        ...(tokenRef.current ? { Authorization: `Bearer ${tokenRef.current}` } : {}),
-        ...init?.headers,
-      },
-    });
-    return res;
+    try {
+      return await fetch(`${API_URL}/v1${path}`, {
+        ...init,
+        credentials: "include",
+        headers: {
+          // FormData define seu próprio Content-Type com boundary — nunca fixar aqui.
+          ...(init?.body && !(init.body instanceof FormData) ? { "Content-Type": "application/json" } : {}),
+          ...(tokenRef.current ? { Authorization: `Bearer ${tokenRef.current}` } : {}),
+          ...init?.headers,
+        },
+      });
+    } catch {
+      // fetch falha com um TypeError genérico ("Failed to fetch") quando o servidor
+      // está fora do ar/inacessível — troca por uma mensagem que o usuário entende.
+      throw new Error("Não foi possível conectar ao servidor. Tente novamente em instantes.");
+    }
   }, []);
 
   const refreshSession = useCallback(async () => {
