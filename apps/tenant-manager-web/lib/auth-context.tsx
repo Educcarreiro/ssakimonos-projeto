@@ -62,9 +62,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     (async () => {
-      const refreshed = await refreshSession();
-      if (refreshed) setUser(await loadMe());
-      setIsLoading(false);
+      try {
+        const refreshed = await refreshSession();
+        if (refreshed) setUser(await loadMe());
+      } catch {
+        // API fora do ar/inacessível — cai pro login em vez de travar "Carregando…" para sempre.
+      } finally {
+        setIsLoading(false);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
