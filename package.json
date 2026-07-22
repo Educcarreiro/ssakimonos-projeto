@@ -1,0 +1,23 @@
+{
+  "name": "sistema-ssa-tenant-manager",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tenant Manager — painel administrativo da SSA Fight Wear",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run start:dev -w apps/tenant-manager-api",
+    "dev:web": "npm run dev -w apps/tenant-manager-web",
+    "build:api": "npm run build -w apps/tenant-manager-api",
+    "build:web": "npm run build -w apps/tenant-manager-web",
+    "db:generate": "npm run generate -w packages/database",
+    "db:migrate": "npm run migrate -w packages/database",
+    "db:seed": "npm run seed -w packages/database",
+    "db:studio": "npm run studio -w packages/database"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
